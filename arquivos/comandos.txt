@@ -1,0 +1,6 @@
+npm init -y
+npm i express -S  // o -S serve para adicionar o express como dependencia no package.json
+npm i body-parser -S
+npm i mongodb -S
+
+node index

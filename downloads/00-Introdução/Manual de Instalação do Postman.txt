@@ -1,0 +1,5 @@
+1º - Para baixar o “Postman” acesse: https://www.getpostman.com
+
+2º - Clique sobre “Get Started”, na próxima página clique sobre “Download” e escolha a versão para o seu sistema operacional. Depois clique em “Salvar arquivo” para baixar.
+
+3º - Clique duas vezes sobre o instalador, o programa será automaticamente instalado e um atalho será criado na sua área de trabalho. Agora é só utilizar!

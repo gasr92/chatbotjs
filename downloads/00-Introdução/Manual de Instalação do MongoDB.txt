@@ -1,0 +1,9 @@
+1º - Para baixar o MongoDB acesse: https://www.mongodb.com/download-center/community
+
+2º - Na aba “Server” faça do “Download” do MSI com a versão estável (current release) para a sua versão do Windows ou escolha a opção para o sistema operacional de sua preferência.
+
+3º - Dê um duplo click no instalador e clique em Next, aceite os termos e clique em Next novamente. Clique em “Complete” para instalar a versão completa do banco de dados. Na tela seguinte deixe as configurações como padrão e clique em Next e em Next novamente, na sequência clique em “Install”. Permita que o aplicativo realize alterações no seu computador e aguarde o término do processo de instalação, por último clique em “Finish”.
+
+4º - Com a abertura inicial do MongoDB, desmarque todas as opções para tornar o aplicativo mais leve e clique em “Start Using Compass”.
+
+5º - No menu “New Connection” preencha as opções para conectar caso você tenha alguma conexão personalizada, ou simplesmente clique em “CONNECT” para conectar com as configurações padrão.
