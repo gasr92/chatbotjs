@@ -4,3 +4,31 @@ npm i body-parser -S
 npm i mongodb -S
 
 node index
+
+
+localhost:3000/insert
+{
+	"code_user": 1,
+	"input": "O sistema é free?",
+	"output": "Não, o sistema é pago."
+}
+
+
+localhost:3000/update
+{
+	"code_current": 10098106019986,
+	"input": "O sistema é free? ALTERADO",
+	"output": "Não, o sistema é pago. ALTERADO"
+}
+
+
+localhost:3000/delete
+{
+	"code_current": 10098106019986
+}
+
+
+localhost:3000/find  // todos campos que forem informados no JSON, serão considerados na pesquisa (AND)
+{
+	"code_user": 1
+}
