@@ -57,6 +57,11 @@ app.post('/insert', urlencodedParser, function(req, res){
     else
         objJSON.code_before = 0;
 
+    if(req.body.code_relation)
+        objJSON.code_relation = req.body.code_relation;
+    else
+        objJSON.code_relation = 0;
+
     // referente a pergunta
     if(req.body.input)
         objJSON.input = req.body.input;
@@ -94,6 +99,9 @@ app.post('/update', urlencodedParser, function(req, res){
     if(req.body.code_before)
         objJSON.code_before = req.body.code_before;
 
+    if(req.body.code_relation)
+        objJSON.code_relation = req.body.code_relation;
+
     // referente a pergunta
     if(req.body.input)
         objJSON.input = req.body.input;
@@ -126,6 +134,9 @@ app.post('/delete', urlencodedParser, function(req, res){
     // codigo da ultima pergunta que foi feita
     if(req.body.code_before)
         objJSON.code_before = req.body.code_before;
+
+    if(req.body.code_relation)
+        objJSON.code_relation = req.body.code_relation;
 
     // referente a pergunta
     if(req.body.input)
@@ -160,6 +171,9 @@ app.post('/find', urlencodedParser, function(req, res){
     if(req.body.code_before)
         objJSON.code_before = req.body.code_before;
 
+    if(req.body.code_relation)
+        objJSON.code_relation = req.body.code_relation;    
+
     // referente a pergunta
     if(req.body.input)
         objJSON.input = req.body.input;
@@ -192,6 +206,11 @@ app.get('/question', urlencodedParser, function(req, res){
     else
         objJSON.code_before = 0;
 
+    if(req.query.code_relation)
+        objJSON.code_relation = Number(req.query.code_relation);
+    else
+        objJSON.code_relation = 0;
+
     if(req.query.input)
         objJSON.input = req.query.input;
     else
@@ -210,7 +229,21 @@ const questionData = function(objJSON, callback){
 
         // se nao encontrou nenhum registro com o objeto informado, busca por usuario
         if(result.length <= 0){
-            collection.find({code_user: objJSON.code_user}).toArray(function(err, result){
+            let code_before = Number(objJSON.code_before);
+            let objFind = {};
+
+            if(code_before > 0){
+                objFind = {
+                    code_user: objJSON.code_user,
+                    code_relation: code_before
+                };
+            }else{
+                objFind = {
+                    code_user: objJSON.code_user
+                };
+            }
+
+            collection.find(objFind).toArray(function(err, result){
                 assert.equal(null, err);
                 
                 // natural language processing (algoritmo de IA utilizado no tratamento de textos)
@@ -301,6 +334,7 @@ const nlp = function(question, array){
             'code_user': array[findIndex].code_user,
             'code_session': array[findIndex].code_session,
             'code_current': array[findIndex].code_current,
+            'code_relation': array[findIndex].code_relation,
             'code_before': array[findIndex].code_before,
             'input': originalQuestion,
             'output': array[findIndex].output
@@ -311,7 +345,7 @@ const nlp = function(question, array){
             '_id': 0,
             'code_user': array[findIndex].code_user,
             'code_session': array[findIndex].code_session,
-            'code_current': array[findIndex].code_current,
+            'code_relation': array[findIndex].code_relation,
             'code_before': array[findIndex].code_before,
             'input': originalQuestion,
             'output': 'Não sei te responder.'
