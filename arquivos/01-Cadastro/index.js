@@ -30,7 +30,7 @@ app.listen(3000);
 console.log('Servidor executando!');
 
 
-app.post('/insert', urlencodedParser, function(req, res){
+app.post('/chatbot/insert', urlencodedParser, function(req, res){
     let objJSON = {};
 
     // verifica se possui usuario
@@ -39,11 +39,11 @@ app.post('/insert', urlencodedParser, function(req, res){
     else
         objJSON.code_user = 0;
 
-    // sessao do usuario
-    if(req.body.code_session)
-        objJSON.code_session = req.body.code_session;
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
     else
-        objJSON.code_session = 0;
+        objJSON.activate = true;
 
     // armazena o codigo da pergunta com a resposta que sera cadastrada
     if(req.body.code_current)
@@ -80,16 +80,58 @@ app.post('/insert', urlencodedParser, function(req, res){
 });
 
 
-app.post('/update', urlencodedParser, function(req, res){
+app.post('/user/insert', urlencodedParser, function(req, res){
+    let objJSON = {};
+
+    // verifica se possui usuario
+    if(req.body.code_user)
+        objJSON.code_user = req.body.code_user;
+    else
+        objJSON.code_user = cod();
+
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
+    else
+        objJSON.activate = true;
+
+    if(req.body.full_name)
+        objJSON.full_name = req.body.full_name;
+    else
+        objJSON.full_name = '';
+
+    if(req.body.user_name)
+        objJSON.user_name = req.body.user_name;
+    else
+        objJSON.user_name = '';
+
+    if(req.body.email)
+        objJSON.email = req.body.email;
+    else
+        objJSON.email = '';
+
+    if(req.body.password)
+        objJSON.password = req.body.password;
+    else
+        objJSON.password = '';
+
+    insertUser(objJSON, function(result){
+        res.send(result);
+    });
+});
+
+
+
+app.post('/chatbot/update', urlencodedParser, function(req, res){
     let objJSON = {};
 
     // verifica se possui usuario
     if(req.body.code_user)
         objJSON.code_user = req.body.code_user;
 
-    // sessao do usuario
-    if(req.body.code_session)
-        objJSON.code_session = req.body.code_session;
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
 
     // armazena o codigo da pergunta com a resposta que sera cadastrada
     if(req.body.code_current)
@@ -115,17 +157,44 @@ app.post('/update', urlencodedParser, function(req, res){
     });
 });
 
-
-app.post('/delete', urlencodedParser, function(req, res){
+app.post('/user/update', urlencodedParser, function(req, res){
     let objJSON = {};
 
     // verifica se possui usuario
     if(req.body.code_user)
         objJSON.code_user = req.body.code_user;
 
-    // sessao do usuario
-    if(req.body.code_session)
-        objJSON.code_session = req.body.code_session;
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
+
+    if(req.body.full_name)
+        objJSON.full_name = req.body.full_name;
+
+    if(req.body.user_name)
+        objJSON.user_name = req.body.user_name;
+
+    if(req.body.email)
+        objJSON.email = req.body.email;
+
+    if(req.body.password)
+        objJSON.password = req.body.password;
+
+    updateUser(objJSON, function(result){
+        res.send(result);
+    });
+});
+
+app.post('/chatbot/delete', urlencodedParser, function(req, res){
+    let objJSON = {};
+
+    // verifica se possui usuario
+    if(req.body.code_user)
+        objJSON.code_user = req.body.code_user;
+
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
 
     // armazena o codigo da pergunta com a resposta que sera cadastrada
     if(req.body.code_current)
@@ -151,17 +220,45 @@ app.post('/delete', urlencodedParser, function(req, res){
     });
 });
 
-
-app.post('/find', urlencodedParser, function(req, res){
+app.post('/user/delete', urlencodedParser, function(req, res){
     let objJSON = {};
 
     // verifica se possui usuario
     if(req.body.code_user)
         objJSON.code_user = req.body.code_user;
 
-    // sessao do usuario
-    if(req.body.code_session)
-        objJSON.code_session = req.body.code_session;
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
+
+    if(req.body.full_name)
+        objJSON.full_name = req.body.full_name;
+
+    if(req.body.user_name)
+        objJSON.user_name = req.body.user_name;
+
+    if(req.body.email)
+        objJSON.email = req.body.email;
+
+    if(req.body.password)
+        objJSON.password = req.body.password;
+
+    deleteUser(objJSON, function(result){
+        res.send(result);
+    });
+});
+
+
+app.post('/chatbot/find', urlencodedParser, function(req, res){
+    let objJSON = {};
+
+    // verifica se possui usuario
+    if(req.body.code_user)
+        objJSON.code_user = req.body.code_user;
+
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
 
     // armazena o codigo da pergunta com a resposta que sera cadastrada
     if(req.body.code_current)
@@ -187,7 +284,35 @@ app.post('/find', urlencodedParser, function(req, res){
     });
 });
 
-app.get('/question', urlencodedParser, function(req, res){
+app.post('/user/find', urlencodedParser, function(req, res){
+    let objJSON = {};
+
+    // verifica se possui usuario
+    if(req.body.code_user)
+        objJSON.code_user = req.body.code_user;
+
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
+
+    if(req.body.full_name)
+        objJSON.full_name = req.body.full_name;
+
+    if(req.body.user_name)
+        objJSON.user_name = req.body.user_name;
+
+    if(req.body.email)
+        objJSON.email = req.body.email;
+
+    if(req.body.password)
+        objJSON.password = req.body.password;
+
+    findUser(objJSON, function(result){
+        res.send(result);
+    });
+});
+
+app.get('/chatbot/question', urlencodedParser, function(req, res){
     let objJSON = {};
 
     // req.query: parametro passado na URL
@@ -196,10 +321,11 @@ app.get('/question', urlencodedParser, function(req, res){
     else
         objJSON.code_user = 0;
 
-    if(req.query.code_session)
-        objJSON.code_session = Number(req.query.code_session);
+    // verifica se usuário está ativo
+    if(req.body.activate)
+        objJSON.activate = req.body.activate;
     else
-        objJSON.code_session = 0;
+        objJSON.activate = true;
 
     if(req.query.code_before)
         objJSON.code_before = Number(req.query.code_before);
@@ -246,9 +372,18 @@ const questionData = function(objJSON, callback){
             collection.find(objFind).toArray(function(err, result){
                 assert.equal(null, err);
                 
-                // natural language processing (algoritmo de IA utilizado no tratamento de textos)
-                result = nlp(objJSON.input, result);
-                callback(result);
+                if(result <= 0){
+                    collection.find({ code_user: objJSON.code_user }).toArray(function(err, result){
+                        // natural language processing (algoritmo de IA utilizado no tratamento de textos)
+                        result = nlp(objJSON.input, result);
+                        callback(result);
+                    });
+                }
+                else{
+                    // natural language processing (algoritmo de IA utilizado no tratamento de textos)
+                    result = nlp(objJSON.input, result);
+                    callback(result);
+                }
             });
         }
         else
@@ -332,7 +467,7 @@ const nlp = function(question, array){
         return [{
             '_id': array[findIndex]._id,
             'code_user': array[findIndex].code_user,
-            'code_session': array[findIndex].code_session,
+            'activate': array[findIndex].activate,
             'code_current': array[findIndex].code_current,
             'code_relation': array[findIndex].code_relation,
             'code_before': array[findIndex].code_before,
@@ -344,7 +479,7 @@ const nlp = function(question, array){
         return [{
             '_id': 0,
             'code_user': array[findIndex].code_user,
-            'code_session': array[findIndex].code_session,
+            'activate': array[findIndex].activate,
             'code_relation': array[findIndex].code_relation,
             'code_before': array[findIndex].code_before,
             'input': originalQuestion,
@@ -363,7 +498,7 @@ function cod(){
     const minuto = data.getMinutes();
     const segundo = data.getSeconds();
     const milisegundos = data.getMilliseconds();
-    const result = parseInt(Number(ano+''+mes+''+dia+''+hora+''+minuto+''+segundo+''+milisegundos) / 2);
+    const result = parseFloat(Number(ano+''+mes+''+dia+''+hora+''+minuto+''+segundo+''+milisegundos) / 2).toFixed(0);
 
     return result;
 }
@@ -406,6 +541,53 @@ const deleteData = function(objJSON, callback){
 const findData = function(objJSON, callback){
     // collection e uma tabela
     const collection = db.collection('chatbot');
+    collection.find(objJSON).toArray(function(err, result){
+        assert.equal(null, err);
+        callback(result);
+    });
+};
+
+
+// user
+
+const insertUser = function(objJSON, callback){
+    // collection e uma tabela
+    const collection = db.collection('user');
+    collection.insertOne(objJSON, function(err, result){
+        assert.equal(null, err);
+        callback(result);
+    });
+};
+
+const updateUser = function(objJSON, callback){
+    // collection e uma tabela
+    const collection = db.collection('user');
+    const code_user = objJSON.code_user;
+
+    // primeiro parametro: id do registro
+    // segundo parametro: campos que deverao ser atualizados (no caso os campos que estao no objJSON)
+    collection.updateOne({code_user: code_user}, {$set: objJSON}, function(err, result){
+        assert.equal(null, err);
+        callback(result);
+    });
+};
+
+const deleteUser = function(objJSON, callback){
+    // collection e uma tabela
+    const collection = db.collection('user');
+
+    // primeiro parametro: id do registro
+    // const code_current = objJSON.code_current;
+    // collection.deleteOne({code_current: code_current}, function(err, result){
+    collection.deleteOne(objJSON, function(err, result){
+        assert.equal(null, err);
+        callback(result);
+    });
+};
+
+const findUser = function(objJSON, callback){
+    // collection e uma tabela
+    const collection = db.collection('user');
     collection.find(objJSON).toArray(function(err, result){
         assert.equal(null, err);
         callback(result);
