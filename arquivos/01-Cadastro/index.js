@@ -442,91 +442,106 @@ const nlp = function(question, array){
     let findInput = 0; // quantidade de ocorrencias encontradas para a pergunta feita
     let findIndex = 0; // indice da resposta encontrada para a pergunta feita
 
-    for(let i = 0; i < array.length; i++){
-        question = question.toString().trim();
-        let input = array[i].input.toString().trim();
-
-        if(input.length <= 0)
-            input = array[i].output.toString().trim();
-
-        // normalize('NFD'): faz com que cada caractere da string seja tratado individualmente
-        // expressao regular de A - Z, para remover acentos (por isso esta usando u0300 e u0360f - ASCII nao convencional)
-        // se estivesse usando o caractere em si, todo ele seria substituido por vazio, ao inves de remover os devidos acentos
-        question = question.normalize('NFD').replace(/[\u0300-\u0360f]/g, '').toLowerCase();
-        
-        // remove caracteres nao-alfanumericos
-        // \s: caracteres de espaco
-        question = question.replace(/[^a-zA-Z0-9\s]/g, '');
-
-        input = input.normalize('NFD').replace(/[\u0300-\u0360f]/g, '').toLowerCase();
-        input = input.replace(/[^a-zA-Z0-9\s]/g, '');
-
-        // tokenizar e transformar cada palavra de uma string em elementos de um array
-        let tokenizationQuestion = question.split(' ');
-        let tokenizationInput = input.split(' ');
-
-        // metodo map percorre cada elemento do array
-        // e: cada elemento do array
-        tokenizationQuestion = tokenizationQuestion.map(function(e){
-            if(e.length > 3){
-                // ignora os ultimos 3 caracteres para nao considerar o tempo verbal das palavras
-                // ex: coloCAR, coloCOU
-                return e.substr(0, e.length - 3)
-            }
-            else
-            {
-                return e;
-            }
-        });
-
-        tokenizationInput = tokenizationInput.map(function(e){
-            if(e.length > 3){
-                // ignora os ultimos 3 caracteres para nao considerar o tempo verbal das palavras
-                // ex: coloCAR, coloCOU
-                return e.substr(0, e.length - 3)
-            }
-            else
-            {
-                return e;
-            }
-        });
-
-        let words = 0;
-        for(let x = 0; x < tokenizationQuestion.length; x++){
-            // se a palavra constar em uma das perguntas
-            if(tokenizationInput.indexOf(tokenizationQuestion[x]) >= 0)
-                words++;
-        }
-
-        if(words > findInput){
-            findInput = words;
-            findIndex = i;
-        }
-    }
-
-    // se alguma resposta foi encontrada
-    if(findInput > 0){
-        return [{
-            '_id': array[findIndex]._id,
-            'code_user': array[findIndex].code_user,
-            'activate': array[findIndex].activate,
-            'code_current': array[findIndex].code_current,
-            'code_relation': array[findIndex].code_relation,
-            'code_before': array[findIndex].code_before,
-            'input': originalQuestion,
-            'output': array[findIndex].output
-        }];
-    }
-    else{
+    let documents = getDocuments(originalQuestion);
+    if(documents){
         return [{
             '_id': 0,
-            'code_user': array[findIndex].code_user,
-            'activate': array[findIndex].activate,
-            'code_relation': array[findIndex].code_relation,
-            'code_before': array[findIndex].code_before,
+            'code_user': -1,
+            'activate': true,
+            'code_current': -1,
+            'code_relation': -1,
+            'code_before': -1,
             'input': originalQuestion,
-            'output': 'Não sei te responder.'
+            'output': 'Ok, entendido.'
         }];
+    }else{
+        for(let i = 0; i < array.length; i++){
+            question = question.toString().trim();
+            let input = array[i].input.toString().trim();
+    
+            if(input.length <= 0)
+                input = array[i].output.toString().trim();
+    
+            // normalize('NFD'): faz com que cada caractere da string seja tratado individualmente
+            // expressao regular de A - Z, para remover acentos (por isso esta usando u0300 e u0360f - ASCII nao convencional)
+            // se estivesse usando o caractere em si, todo ele seria substituido por vazio, ao inves de remover os devidos acentos
+            question = question.normalize('NFD').replace(/[\u0300-\u0360f]/g, '').toLowerCase();
+            
+            // remove caracteres nao-alfanumericos
+            // \s: caracteres de espaco
+            question = question.replace(/[^a-zA-Z0-9\s]/g, '');
+    
+            input = input.normalize('NFD').replace(/[\u0300-\u0360f]/g, '').toLowerCase();
+            input = input.replace(/[^a-zA-Z0-9\s]/g, '');
+    
+            // tokenizar e transformar cada palavra de uma string em elementos de um array
+            let tokenizationQuestion = question.split(' ');
+            let tokenizationInput = input.split(' ');
+    
+            // metodo map percorre cada elemento do array
+            // e: cada elemento do array
+            tokenizationQuestion = tokenizationQuestion.map(function(e){
+                if(e.length > 3){
+                    // ignora os ultimos 3 caracteres para nao considerar o tempo verbal das palavras
+                    // ex: coloCAR, coloCOU
+                    return e.substr(0, e.length - 3)
+                }
+                else
+                {
+                    return e;
+                }
+            });
+    
+            tokenizationInput = tokenizationInput.map(function(e){
+                if(e.length > 3){
+                    // ignora os ultimos 3 caracteres para nao considerar o tempo verbal das palavras
+                    // ex: coloCAR, coloCOU
+                    return e.substr(0, e.length - 3)
+                }
+                else
+                {
+                    return e;
+                }
+            });
+    
+            let words = 0;
+            for(let x = 0; x < tokenizationQuestion.length; x++){
+                // se a palavra constar em uma das perguntas
+                if(tokenizationInput.indexOf(tokenizationQuestion[x]) >= 0)
+                    words++;
+            }
+    
+            if(words > findInput){
+                findInput = words;
+                findIndex = i;
+            }
+        }
+    
+        // se alguma resposta foi encontrada
+        if(findInput > 0){
+            return [{
+                '_id': array[findIndex]._id,
+                'code_user': array[findIndex].code_user,
+                'activate': array[findIndex].activate,
+                'code_current': array[findIndex].code_current,
+                'code_relation': array[findIndex].code_relation,
+                'code_before': array[findIndex].code_before,
+                'input': originalQuestion,
+                'output': array[findIndex].output
+            }];
+        }
+        else{
+            return [{
+                '_id': 0,
+                'code_user': array[findIndex].code_user,
+                'activate': array[findIndex].activate,
+                'code_current': array[findIndex].code_current,
+                'code_relation': array[findIndex].code_relation,
+                'code_before': array[findIndex].code_before,
+                'input': originalQuestion,
+                'output': 'Não sei te responder.'
+            }];
+        }
     }
 };
 
@@ -543,6 +558,128 @@ function cod(){
     const result = Number(parseFloat(Number(ano+''+mes+''+dia+''+hora+''+minuto+''+segundo+''+milisegundos) / 2).toFixed(0));
 
     return result;
+}
+
+const getDocuments = function(question = ''){
+    question = question.toString().trim();
+    let _nome = getName(question);
+    let _idade = getYears(question);
+    let _email = '';
+    let _celular = '';
+    let _telefone = '';
+    let _cep = '';
+    let _cpf = '';
+    let _cnpj = '';
+
+    const questionTokens = question.split('');
+    for(let i = 0; i < questionTokens; i++){
+        let word = questionTokens[i].toString().trim();
+
+        if(word.length >= 1){
+            if(_email.length <= 0) _email = email(word);
+            if(_celular.length <= 0) _celular = celular(word);
+            if(_telefone.length <= 0) _telefone = telefone(word);
+            if(_cep.length <= 0) _cep = cep(word);
+            if(_cpf.length <= 0) _cpf = cpf(word);
+            if(_cnpj.length <= 0) _cnpj = cnpj(word);
+        }
+
+        let objJSON = {};
+        if(_nome.length > 0) objJSON.nome = _nome; else objJSON.nome = '';
+        if(_idade.length > 0) objJSON.nome = Number(_idade); else objJSON.idade = '';
+        if(_email.length > 0) objJSON.email = _email; else objJSON.email = '';
+        if(_celular.length > 0) objJSON.celular = _celular; else objJSON.celular = '';
+        if(_telefone.length > 0) objJSON.telefone = _telefone; else objJSON.telefone = '';
+        if(_cep.length > 0) objJSON.cep = _cep; else objJSON.cep = '';
+        if(_cpf.length > 0) objJSON.cpf = _cpf; else objJSON.cpf = '';
+        if(_cnpj.length > 0) objJSON.cnpj = _cnpj; else objJSON.cnpj = '';
+
+        // se nao encontrar nenhum dos valores capturados, retorna falso
+        if((
+            _nome.length > 0) ||
+            (_idade.length > 0) ||
+            (_email.length > 0) ||
+            (_celular.length > 0) ||
+            (_telefone.length > 0) ||
+            (_cep.length > 0) ||
+            (_cpf.length > 0) ||
+            (_cnpj.length > 0)
+        ){
+            const collection = db.collection('documents');
+            collection.insertOne(objJSON);
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+const getName = function(question = ''){
+    question = question.toString().trim();
+    let nome = '';
+    let start = '';
+
+    // testa se o usuario informou o nome, utilizando uma das palavras abaixo
+    // ex: eu me chamo... meu nome é... Nome: Gabriel...
+    if(question.indexOf('Nome') >= 0) start = 'Nome';
+    if(question.indexOf('nome') >= 0) start = 'nome';
+
+    // eu me chamo...
+    if(question.indexOf('chamo') >= 0) start = 'chamo';
+
+    if((start.length > 0) && (question.indexOf('seu') < 0)){
+        let indexStart = question.indexOf(start) + start.length + 1;
+        let end = '';
+
+        if(question.indexOf(' e ') >= 0 && question.indexOf(' e ') > indexStart)
+            end = ' e ';
+
+        if(question.indexOf(',') >= 0 && question.indexOf(',') > indexStart)
+            end = ',';
+
+        if(question.indexOf(';') >= 0 && question.indexOf(';') > indexStart)
+            end = ';';
+
+        if(question.indexOf('.') >= 0 && question.indexOf('.') > indexStart)
+            end = '.';
+
+        let indexEnd = question.indexOf(end);
+        if(indexEnd < indexStart)
+            indexEnd = question.    lçetlength;
+
+        nome = question.substring(indexStart, indexEnd);
+        nome = nome.replace(/é/g, '');
+        nome = nome.replace(/:/g, '');
+        nome = nome.replace(/[0-9]]/g, '').trim();
+
+        return nome;
+    }
+}
+
+const getYears = function(question = ''){
+    question = question.toString().trim();
+    let idade = '';
+    if(question.indexOf('anos') > 0){
+        let arr = question.split(' ');
+
+        // palavra anterior a palavra ANOS, que provavelmente e a idade
+        // ex: eu tenho xx anos
+        let anos = arr[arr.indexOf('anos') - 1];
+
+        if(Number(anos) > 0 && Number(anos) < 125)
+            idade = anos;
+
+        return idade;
+    }
+}
+
+const email = function(_email = ''){
+    _email = _email.toString().trim();
+
+    if(_email.indexOf('@') > 0 && _email.indexOf('.') > 0 && _email.length >= 5)
+        return _email;
+    else
+        return '';
 }
 
 const insertData = function(objJSON, callback){
