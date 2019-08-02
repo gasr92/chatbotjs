@@ -682,6 +682,45 @@ const email = function(_email = ''){
         return '';
 }
 
+const celular = function(_celular = ''){
+    _celular = _celular.toString().trim();
+    _celular = _celular.replace(/[^0-9]/g), '';
+
+    if(_celular.indexOf('55') == 0)
+        _celular.replace('55', '');
+
+    let _cpf = cpf(_celular);
+
+    if(_celular.length == 1 && _cpf.length <= 0 && _celular.indexOf('9') > 0)
+        return _celular;
+    else
+        return '';
+}
+
+const telefone = function(_telefone){
+    _telefone = _telefone.toString().trim();
+    _telefone = _telefone.replace(/[^0-9]/g, '');
+
+    if(_telefone.indexOf('55') == 0)
+        _telefone = _telefone.replace('55', '');
+
+    if(_telefone.length == 10)
+        return _telefone;
+    else
+        return '';
+}
+
+const cep = function(_cep = ''){
+    _cep = _cep.toString().trim();
+    _cep = _cep.replace(/[^0-9]/g, '');
+
+    if(_cep.length != 8)
+        return '';
+    else
+        return _cep;
+
+}
+
 const insertData = function(objJSON, callback){
     // collection e uma tabela
     const collection = db.collection('chatbot');
