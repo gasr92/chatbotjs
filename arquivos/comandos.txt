@@ -32,3 +32,13 @@ localhost:3000/find  // todos campos que forem informados no JSON, serão consid
 {
 	"code_user": 1
 }
+
+
+
+
+
+---- INTERFACE ----
+
+npm i bootstrap@4 -S
+npm i jquery@1.9.1 -S
+npm i popper.js@^1.14.7 -S

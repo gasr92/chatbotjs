@@ -572,7 +572,7 @@ const getDocuments = function(question = ''){
     let _cnpj = '';
 
     const questionTokens = question.split('');
-    for(let i = 0; i < questionTokens; i++){
+    for(let i = 0; i < questionTokens.length; i++){
         let word = questionTokens[i].toString().trim();
 
         if(word.length >= 1){
@@ -583,6 +583,8 @@ const getDocuments = function(question = ''){
             if(_cpf.length <= 0) _cpf = cpf(word);
             if(_cnpj.length <= 0) _cnpj = cnpj(word);
         }
+
+        console.log('_nome: ' + _nome);
 
         let objJSON = {};
         if(_nome.length > 0) objJSON.nome = _nome; else objJSON.nome = '';
@@ -614,7 +616,7 @@ const getDocuments = function(question = ''){
     }
 }
 
-const getName = function(question = ''){
+const getName = function(question = ''){  
     question = question.toString().trim();
     let nome = '';
     let start = '';
@@ -633,19 +635,16 @@ const getName = function(question = ''){
 
         if(question.indexOf(' e ') >= 0 && question.indexOf(' e ') > indexStart)
             end = ' e ';
-
-        if(question.indexOf(',') >= 0 && question.indexOf(',') > indexStart)
+        else if(question.indexOf(',') >= 0 && question.indexOf(',') > indexStart)
             end = ',';
-
-        if(question.indexOf(';') >= 0 && question.indexOf(';') > indexStart)
+        else if(question.indexOf(';') >= 0 && question.indexOf(';') > indexStart)
             end = ';';
-
-        if(question.indexOf('.') >= 0 && question.indexOf('.') > indexStart)
+        else if(question.indexOf('.') >= 0 && question.indexOf('.') > indexStart)
             end = '.';
 
         let indexEnd = question.indexOf(end);
         if(indexEnd < indexStart)
-            indexEnd = question.    lçetlength;
+            indexEnd = question.length;
 
         nome = question.substring(indexStart, indexEnd);
         nome = nome.replace(/é/g, '');
@@ -654,10 +653,15 @@ const getName = function(question = ''){
 
         return nome;
     }
+
+    return '';
 }
 
 const getYears = function(question = ''){
     question = question.toString().trim();
+    //   \s: caracter de espaco
+    question = question.replace(/[^0-9a-zA-Z\s]/g, '');
+
     let idade = '';
     if(question.indexOf('anos') > 0){
         let arr = question.split(' ');
@@ -671,11 +675,13 @@ const getYears = function(question = ''){
 
         return idade;
     }
+
+    return 0;
 }
 
 const email = function(_email = ''){
     _email = _email.toString().trim();
-
+    _email = _email.replace('/[^0-9a-zA-Z@.-_]/g', '')
     if(_email.indexOf('@') > 0 && _email.indexOf('.') > 0 && _email.length >= 5)
         return _email;
     else
@@ -719,6 +725,34 @@ const cep = function(_cep = ''){
     else
         return _cep;
 
+}
+
+const cpf = function(_cpf){
+    // o D maiusculo significa caracteres nao numericos
+    _cpf = _cpf.toString().trim().replace(/\D/g, '');
+
+    if(_cpf.toString().length != 11)
+        return '';  
+
+    let result = _cpf;
+        
+        // aqui teria uma validacao de CPF, mas nao vou fazer no momento
+
+    return '85706320020';
+}
+
+const cnpj = function(_cnpj){
+    // d minusculo significa caracteres numericos
+    _cnpj = _cnpj.toString().trim().replace(/^\d/g, '');
+
+    if(_cnpj.toString().length != 14)
+        return '';  
+
+    let result = _cnpj;
+    
+    // aqui teria uma validacao de cnpj, mas nao vou fazer no momento
+
+    return '93056824000164';
 }
 
 const insertData = function(objJSON, callback){
